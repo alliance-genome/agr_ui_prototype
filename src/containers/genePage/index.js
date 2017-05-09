@@ -14,11 +14,18 @@ import HeadMetaTags from '../../components/headMetaTags';
 import TranscriptInlineViewer from './transcriptInlineViewer';
 
 class GenePage extends Component {
+  getInitialData() {
+    if (window.SEED_DATA) {
+      if (this.props.params.geneId === window.SEED_DATA.primaryId) this.props.dispatch(fetchGeneSuccess(window.SEED_DATA));
+    } else {
+      this.props.dispatch(fetchGene());
+      fetchData(`/api/gene/${this.props.params.geneId}`)
+        .then(data => this.props.dispatch(fetchGeneSuccess(data)))
+        .catch(error => this.props.dispatch(fetchGeneFailure(error)));
+    }
+  }
   componentDidMount() {
-    this.props.dispatch(fetchGene());
-    fetchData(`/api/gene/${this.props.params.geneId}`)
-      .then(data => this.props.dispatch(fetchGeneSuccess(data)))
-      .catch(error => this.props.dispatch(fetchGeneFailure(error)));
+    this.getInitialData();
   }
 
   render() {

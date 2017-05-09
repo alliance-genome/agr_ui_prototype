@@ -19,11 +19,16 @@ var PORT = process.env.PORT || 3000;
 var API_URL = process.env.API_URL || 'http://dev.alliancegenome.org/api/';
 // init and basic config
 var app = express();
+// assets
+app.use('/public', express.static('dist'))
 app.set('view engine', 'ejs');
 app.set('views','./src/server');
 // proxy external API server at /api
 app.get('/api/:resource/:id', requestProxy({
   url: API_URL + ':resource/:id',
+}));
+app.get('/api/:searchPath', requestProxy({
+  url: API_URL + ':searchPath',
 }));
 // render gene page with react after getting data
 app.get('/gene/:id', function(req, res) {
@@ -37,9 +42,10 @@ app.get('/gene/:id', function(req, res) {
       var historyObj = createMemoryHistory(req.path);
       var store = configureStore(historyObj);
       store.dispatch(fetchGeneSuccess(response.body));
+      var _hydratedState = JSON.stringify(response.body);
       var element = React.createElement(ReactApp, { history: historyObj, store: store });
       var _htmlString = ReactServer.renderToString(element);
-      res.render('server_layout', { htmlString: _htmlString });
+      res.render('server_layout', { htmlString: _htmlString, hydratedState: _hydratedState  });
     } else {
       _htmlString = '<h1>Error</h1>';
       res.status(500).render('server_layout', { htmlString: _htmlString });
