@@ -14,7 +14,7 @@
     "babel-register": "^6.24.1",
     "d3": "^3.5.17",
     "ejs": "^2.5.6",
-    "express": "^4.15.12",
+    "express": "^4.15.2",
     "express-request-proxy": "^2.0.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "immutable": "^3.8.1",
@@ -55,12 +55,11 @@
     "rimraf": "^2.5.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1",
-    "webpack-node-externals": "^1.4.3"
+    "webpack": "^2.5.1",
+    "webpack-hot-middleware": "^2.18.0"
   },
   "scripts": {
-    "start": "node src/server/",
+    "start": "NODE_ENV=production BABEL_ENVIRONMENT=production node src/server/",
     "prestart:docker": "npm install && npm run build",
     "start:docker": "webpack-dev-server --history-api-fallback --host 0.0.0.0 --port 2992 --hot --inline",
     "prebuild": "npm run clean && npm run copy",

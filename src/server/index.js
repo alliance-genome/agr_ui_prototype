@@ -9,20 +9,31 @@ var ReactServer = require('react-dom/server');
 var request = require('request');
 var router = require('react-router')
 var createMemoryHistory = require('react-router').createMemoryHistory;
+var webpack = require('webpack');
+var webpackConfig = require('../../webpack.config');
+var compiler = webpack(webpackConfig);
 
 var configureStore = require('../lib/configureStore').default;
 var fetchGeneSuccess = require('../actions/genes').fetchGeneSuccess;
 var ReactApp = require('../reactApplication').default;
 
+// CONFIGURATION
 // set PORT and API_URL
 var PORT = process.env.PORT || 3000;
 var API_URL = process.env.API_URL || 'http://dev.alliancegenome.org/api/';
+var IS_PRODUCTION = true;//process.env.NODE_ENV === 'production';
 // init and basic config
 var app = express();
 // assets
 app.use('/public', express.static('dist'))
+// webpack dev environment
+app.use(require("webpack-dev-middleware")(compiler, {
+  noInfo: true, publicPath: webpackConfig.output.publicPath
+}));
+// server template configuration
 app.set('view engine', 'ejs');
 app.set('views','./src/server');
+
 // proxy external API server at /api
 app.get('/api/:resource/:id', requestProxy({
   url: API_URL + ':resource/:id',
@@ -30,6 +41,7 @@ app.get('/api/:resource/:id', requestProxy({
 app.get('/api/:searchPath', requestProxy({
   url: API_URL + ':searchPath',
 }));
+
 // render gene page with react after getting data
 app.get('/gene/:id', function(req, res) {
   var apiUrl = API_URL + 'gene/' + req.params.id;
@@ -52,6 +64,7 @@ app.get('/gene/:id', function(req, res) {
     }
   });
 });
+
 // defer all other HTML to react application
 app.use(function (req, res) {
   var element = React.createElement(ReactApp, null);
