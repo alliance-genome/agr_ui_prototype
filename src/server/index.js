@@ -1,8 +1,6 @@
-var webpackConfig = require('../../webpack.config');
 require("babel-register")({
   plugins:  ["css-modules-transform"]
 });
-require.extensions['.css'] = require('css-loader');
 require.extensions['.png'] = function () {};
 
 var express = require('express');
@@ -14,8 +12,6 @@ var router = require('react-router')
 var createMemoryHistory = require('react-router').createMemoryHistory;
 var webpack = require('webpack');
 
-var compiler = webpack(webpackConfig);
-
 var configureStore = require('../lib/configureStore').default;
 var fetchGeneSuccess = require('../actions/genes').fetchGeneSuccess;
 var ReactApp = require('../reactApplication').default;
@@ -24,13 +20,15 @@ var ReactApp = require('../reactApplication').default;
 // set PORT and API_URL
 var PORT = process.env.PORT || 3000;
 var API_URL = process.env.API_URL || 'http://dev.alliancegenome.org/api/';
-var IS_PRODUCTION = true;//process.env.NODE_ENV === 'production';
+var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 // init and basic config
 var app = express();
 // assets
 app.use('/public', express.static('dist'))
 // webpack dev environment
-if (IS_PRODUCTION) {
+if (!IS_PRODUCTION) {
+  var webpackConfig = require('../../webpack.config');
+  var compiler = webpack(webpackConfig);
   app.use(require("webpack-dev-middleware")(compiler, {
     noInfo: true, publicPath: webpackConfig.output.publicPath
   })); 
