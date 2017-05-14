@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   // context: dirname,
@@ -20,7 +21,8 @@ module.exports = {
   plugins: [
     // new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new ExtractTextPlugin("agr.css"),
   ],
   // preLoaders: [
   //   {
@@ -39,7 +41,18 @@ module.exports = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        loaders:['style-loader', 'css-loader']
+          use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+              },
+            },
+          ]
+        }),
       },
       // {
       //   test: /\.css$/,

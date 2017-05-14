@@ -1,5 +1,8 @@
-require("babel-register");
-require.extensions['.css'] = function () {};
+var webpackConfig = require('../../webpack.config');
+require("babel-register")({
+  plugins:  ["css-modules-transform"]
+});
+require.extensions['.css'] = require('css-loader');
 require.extensions['.png'] = function () {};
 
 var express = require('express');
@@ -10,7 +13,7 @@ var request = require('request');
 var router = require('react-router')
 var createMemoryHistory = require('react-router').createMemoryHistory;
 var webpack = require('webpack');
-var webpackConfig = require('../../webpack.config');
+
 var compiler = webpack(webpackConfig);
 
 var configureStore = require('../lib/configureStore').default;
@@ -27,9 +30,12 @@ var app = express();
 // assets
 app.use('/public', express.static('dist'))
 // webpack dev environment
-app.use(require("webpack-dev-middleware")(compiler, {
-  noInfo: true, publicPath: webpackConfig.output.publicPath
-}));
+if (IS_PRODUCTION) {
+  app.use(require("webpack-dev-middleware")(compiler, {
+    noInfo: true, publicPath: webpackConfig.output.publicPath
+  })); 
+}
+
 // server template configuration
 app.set('view engine', 'ejs');
 app.set('views','./src/server');
