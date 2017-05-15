@@ -1,1 +1,1 @@
-web: BABEL_ENV=production npm start
+web: npm run build && npm run start:prod
