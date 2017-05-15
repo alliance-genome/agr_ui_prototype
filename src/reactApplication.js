@@ -8,19 +8,10 @@ import configureStore from './lib/configureStore';
 import routes from './routes';
 
 class ReactApp extends Component {
-  getDefaultHistory() {
-    let isBrowser = (typeof window !== 'undefined');
-    return isBrowser ? browserHistory : createMemoryHistory('/');
-  }
-
-  getDefaultStore(history) {
-    return configureStore(history);
-  }
-
   render() {
     let isBrowser = (typeof window !== 'undefined');
-    let historyObj = this.props.history || this.getDefaultHistory();
-    let store = this.props.store || this.getDefaultStore(historyObj);
+    let historyObj = isBrowser ? browserHistory : createMemoryHistory('/');
+    let store = configureStore(historyObj);
     let history = syncHistoryWithStore(historyObj, store);
     let routerMiddlware = [];
     if (isBrowser) {
@@ -35,10 +26,5 @@ class ReactApp extends Component {
     );
   }
 }
-
-ReactApp.propTypes = {
-  history: React.PropTypes.object,
-  store: React.PropTypes.object
-};
 
 export default ReactApp;
