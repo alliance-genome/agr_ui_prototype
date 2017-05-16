@@ -5,6 +5,7 @@ require.extensions['.png'] = function () {};
 
 var express = require('express');
 var requestProxy = require('express-request-proxy');
+var compression = require('compression')
 var React = require('react');
 var ReactServer = require('react-dom/server');
 var request = require('request');
@@ -23,6 +24,7 @@ var API_URL = process.env.API_URL || 'http://dev.alliancegenome.org/api/';
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
 // init and basic config
 var app = express();
+app.use(compression());
 // assets
 app.use('/public', express.static('dist'))
 // webpack dev environment
