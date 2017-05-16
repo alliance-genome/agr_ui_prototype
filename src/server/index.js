@@ -3,7 +3,6 @@ require("babel-register")({
   plugins:  ["css-modules-transform"]
 });
 require.extensions['.png'] = function (_module) {
-  // TODO, get the filename on the server
   var filename = _module.id.split("/").pop();
   var filepath = webpackConfig.output.publicPath + filename;
   _module.exports = filepath;
