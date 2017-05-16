@@ -13,10 +13,7 @@ class Layout extends Component {
     return (
       <div className={style.appContainer}>
         <div className={`alert alert-info ${style.appAlert}`} role='alert'>
-          This website is a prototype and information may not be verified.
-        </div>
-        <div className={`alert alert-warning ${style.appAlert}`} role='alert'>
-          Internal Development Release. Submit bugs <a href='https://github.com/alliance-genome/agr/issues'>here.</a>
+          This website is a prototype and information may not be verified. Submit bugs <a href='https://github.com/alliance-genome/agr/issues'>here.</a>
         </div>
         <div className={style.topHeader}>
           <div className='row'>

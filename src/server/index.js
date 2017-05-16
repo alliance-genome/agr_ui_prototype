@@ -1,7 +1,14 @@
+var webpackConfig = require('../../webpack.config');
 require("babel-register")({
   plugins:  ["css-modules-transform"]
 });
-require.extensions['.png'] = function () {};
+require.extensions['.png'] = function (_module) {
+  // TODO, get the filename on the server
+  var filename = _module.id.split("/").pop();
+  var filepath = webpackConfig.output.publicPath + filename;
+  _module.exports = filepath;
+  return _module;
+};
 
 var express = require('express');
 var requestProxy = require('express-request-proxy');
@@ -29,7 +36,6 @@ app.use(compression());
 app.use('/public', express.static('dist'))
 // webpack dev environment
 if (!IS_PRODUCTION) {
-  var webpackConfig = require('../../webpack.config');
   var compiler = webpack(webpackConfig);
   app.use(require("webpack-dev-middleware")(compiler, {
     noInfo: true, publicPath: webpackConfig.output.publicPath
