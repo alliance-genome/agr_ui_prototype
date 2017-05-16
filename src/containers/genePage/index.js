@@ -12,16 +12,25 @@ import DiseaseTable from '../../components/disease';
 import Subsection from '../../components/subsection';
 import HeadMetaTags from '../../components/headMetaTags';
 import TranscriptInlineViewer from './transcriptInlineViewer';
+import LoadingPage from '../../components/loadingpage';
 
 class GenePage extends Component {
+  fetchData() {
+    this.props.dispatch(fetchGene());
+    fetchData(`/api/gene/${this.props.params.geneId}`)
+      .then(data => this.props.dispatch(fetchGeneSuccess(data)))
+      .catch(error => this.props.dispatch(fetchGeneFailure(error)));
+  }
+
   getInitialData() {
     if (window.SEED_DATA) {
-      if (this.props.params.geneId === window.SEED_DATA.primaryId) this.props.dispatch(fetchGeneSuccess(window.SEED_DATA));
+      if (this.props.params.geneId === window.SEED_DATA.primaryId) {
+        this.props.dispatch(fetchGeneSuccess(window.SEED_DATA));
+      } else {
+        this.fetchData();
+      }
     } else {
-      this.props.dispatch(fetchGene());
-      fetchData(`/api/gene/${this.props.params.geneId}`)
-        .then(data => this.props.dispatch(fetchGeneSuccess(data)))
-        .catch(error => this.props.dispatch(fetchGeneFailure(error)));
+      this.fetchData()
     }
   }
   componentDidMount() {
@@ -30,7 +39,7 @@ class GenePage extends Component {
 
   render() {
     if (this.props.loading) {
-      return <span>loading...</span>;
+      return <LoadingPage />;
     }
 
     if (this.props.error) {

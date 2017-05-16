@@ -73,7 +73,9 @@ app.get('/gene/:id', function(req, res) {
 
 // defer all other HTML to react application
 app.use(function (req, res) {
-  var element = React.createElement(ReactApp, null);
+  var historyObj = createMemoryHistory(req.path);
+  var store = configureStore(historyObj);
+  var element = React.createElement(ReactApp, { history: historyObj, store: store });
   var _htmlString = ReactServer.renderToString(element);
   res.render('server_layout', { htmlString: _htmlString });
 });
