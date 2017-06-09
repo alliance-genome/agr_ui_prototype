@@ -61,14 +61,17 @@ app.get('/gene/:id', function(req, res) {
     json: true
   }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-      _htmlString = '<h1>hello</h1>';
       var historyObj = createMemoryHistory(req.path);
       var store = configureStore(historyObj);
       store.dispatch(fetchGeneSuccess(response.body));
       var _hydratedState = JSON.stringify(response.body);
       var element = React.createElement(ReactApp, { history: historyObj, store: store });
       var _htmlString = ReactServer.renderToString(element);
-      res.render('server_layout', { htmlString: _htmlString, hydratedState: _hydratedState  });
+      if (_htmlString.match('Page Not Found')) {
+        res.status(404).render('server_layout', { htmlString: _htmlString, hydratedState: _hydratedState  });
+      } else {
+        res.render('server_layout', { htmlString: _htmlString, hydratedState: _hydratedState  });
+      }
     } else {
       _htmlString = '<h1>Error</h1>';
       res.status(500).render('server_layout', { htmlString: _htmlString });
@@ -82,7 +85,11 @@ app.use(function (req, res) {
   var store = configureStore(historyObj);
   var element = React.createElement(ReactApp, { history: historyObj, store: store });
   var _htmlString = ReactServer.renderToString(element);
-  res.render('server_layout', { htmlString: _htmlString });
+  if (_htmlString.match('Page Not Found')) {
+    res.status(404).render('server_layout', { htmlString: _htmlString  });
+  } else {
+    res.render('server_layout', { htmlString: _htmlString  });
+  }
 });
 
 app.listen(PORT);
