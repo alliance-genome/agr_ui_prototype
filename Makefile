@@ -21,3 +21,5 @@ pull:
 bash:
 	docker run -t -i agrdocker/agr_ui_server:develop bash
 
+docker-run:
+	docker run -t -i agrdocker/agr_ui_server:develop
