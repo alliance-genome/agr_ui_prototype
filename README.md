@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/alliance-genome/agr.svg?branch=master)](https://travis-ci.org/alliance-genome/agr)
 
+>**Note:**  
+>This archived repository is no longer actively used nor maintained.  
+>Its functionality has been replaced by other AGR repositories.
+
+
 # Alliance of Genome Resources UI
 
 The web UI portal of the Alliance of Genome Resources.
